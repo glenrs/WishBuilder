@@ -3,8 +3,14 @@ from sys import argv
 import os.path
 import gzip
 
-statusFile = open('status.txt', 'w')
+dataDictionary = {}
+minTestCases = 6
+testNumber = 0
+numRows = 1 #1 to account for Column Header line
+numSampleRows = 5
+numSampleColumns = 5
 
+statusFile = open('status.txt', 'w')
 keyFileExtension = '/testdata.tsv'
 testFileExtension = '/data.tsv'
 keyFilePath = argv[1] + keyFileExtension
@@ -20,17 +26,24 @@ if os.path.exists(keyFilePath):
 else:
     statusFile.write(keyFileExtension + ' does not exist.\n\n')
 
-#with gzip
+# Open Files
 keyFile = open(keyFilePath, 'r')
-    #with gzip
 testFile = open(testFilePath, 'r')
 testHeaderData = testFile.readline().rstrip('\n').split('\t')
 keyHeaderData = keyFile.readline().rstrip('\n').split('\t')
-dataDictionary = {}
-testNumber = 0
-numRows = 1 #1 to account for Column Header line
-numSampleRows = 5
-numSampleColumns = 5
+
+# Make sure first column isn't empty
+if testHeaderData[0] == "":
+    statusFile.write('First column header is empty. (Should be labeled \"Sample\")\n\n')
+
+# Make Sure key file "testdata.tsv" has enough Tests
+numTests = 0
+for line in keyFile:
+    numTests = numTests + 1
+if numTests == 0:
+    statusFile.write(keyFileExtension + ' is empty\n\n')
+elif numTests < minTestCases + 1:
+    statusFile.write(keyFileExtension + ' does not contain enough test cases. (Minimum = ' + str(minTestCases) + ')\n\n')
 
 #Print sample of output file and print # of columns and rows in source File
 statusFile.write('First ' + str(numSampleRows) + ' rows and ' + str(numSampleColumns) + ' columns of test file: \n\n')
