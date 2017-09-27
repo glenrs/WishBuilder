@@ -8,7 +8,7 @@ import re
 dataDictionary = {}
 minTestCases = 8
 testNumber = 0
-numRows = 1 #1 to account for Column Header line
+numRows = 1 #1 to account for Column Header Row
 numSampleRows = 5
 numSampleColumns = 5
 checkMark = '&#9989;'
@@ -50,9 +50,9 @@ else:
 
     # Run User-generated scripts
     os.chdir(argv[1])
-    os.system('chmod +x ./download.sh')
+#    os.system('chmod +x ./download.sh')
     os.system('chmod +x ./parse.sh')
-    os.system('./download.sh')
+#    os.system('./download.sh')
     os.system('./parse.sh')
     string1 = str(subprocess.check_output(['file', '-b', argv[1] + testFileName + '.gz']))
     if os.path.exists(argv[1] + testFileName + '.gz'):
@@ -60,7 +60,6 @@ else:
             subprocess.call(['gzip', '-d', argv[1] + testFileName])
             statusFile.write(checkMark + '\t' + testFileName + '.gz was created and zipped correctly.\n\n')
         else:
-            statusFile.write(redX + '\t' + argv[1] + testFileName + '.gz is not properly zipped.\n\n')
             fail = True
     else:
         statusFile.write(redX + '\t' + testFileName + '.gz does not exist.\n\n')
@@ -91,6 +90,7 @@ else:
         statusFile.write(redX + '\t' + keyFileName + ' does not contain enough test cases. (' + str(numTests) + '; minimum = ' + str(minTestCases) + ')\n\n')
         fail = True
     else:
+        statusFile.write(checkMark + '\t' + keyFileName + ' is the key file.\n\n')
         statusFile.write(checkMark + '\t' + keyFileName + ' contains enough test cases (' + str(numTests) + '; minimum = ' + str(minTestCases) + ')\n\n')
     if fail:
         print('Fail')
@@ -138,7 +138,7 @@ else:
         compareString = '||\tSample\t|\tColumn\t|\tRow\t|\n|\t---\t|\t---\t|\t---\t|\t---\t|\n|\t**Expected**\t|\t' + sample + '\t|\t' + variable + '\t|\t' + value + '\t|\n'
     #Testing first column
         if (sample not in dataDictionary.keys()):
-            failString = '- \"' + sample + '\" is not found in Sample columns'
+            failString = '- \"' + sample + '\" is not found in \"' + testHeaderData[0] + '\" column.'
     #Testing if second column is in Header
         else:
             failString = '- \"' + variable + '\" is not found in Headers'
