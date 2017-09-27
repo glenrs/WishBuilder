@@ -49,6 +49,7 @@ else:
     statusFile.write('###### Results: PASS\n\n---\n##### Testing user code and test file . . .\n')
 
     # Run User-generated scripts
+    os.chdir(argv[1])
     os.system('chmod +x ./download.sh')
     os.system('chmod +x ./parse.sh')
     os.system('./download.sh')
@@ -159,10 +160,10 @@ else:
     if passedTestCases:
         print('Success')
         statusFile.write('##### Results: PASS\n---')
-        complete = False
     else:
         statusFile.write('##### Results: **FAIL**\n---')
         print('Fail')
+        complete = False
     #Close Files
     testFile.close()
     keyFile.close()
